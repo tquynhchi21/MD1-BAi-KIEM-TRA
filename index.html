@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1" style="width: 50%;text-align: center">
+    <p id="validate"></p>
+    <input id="newCategory" type="text">
+    <button onclick="createCategory()">CreateCategory</button>
+    <th>STT</th>
+    <th>THỂ LOẠI</th>
+    <th>EDIT</th>
+    <th>DELETE</th>
+    <tbody id="drawTable">
+    </tbody>
+</table>
+<script>
+    class Category {
+        id;
+        name;
+        constructor(id,name) {
+            this.id = id;
+            this.name = name;
+        }
+        getId(){
+            return this.id;
+        }
+        setId(id){
+            this.id = id;
+        }
+        getName(){
+            return this.name;
+        }
+        setName(name){
+            this.name = name;
+        }
+    }
+    let listCategory = [];
+    let category1 = new Category(1,'nhạc đỏ')
+    let category2 = new Category(2,'nhạc vàng')
+    let category3 = new Category(3,'nhạc trẻ')
+    let category4 = new Category(4,'rock')
+
+    listCategory.push(category1,category2,category3,category4);
+    console.log('catrgory',listCategory)
+
+    function showListCategory() {
+        let drawTable = '';
+        let class_tr = '';
+
+        for (let i = 0; i < listCategory.length; i++) {
+            drawTable += `<tr class="${class_tr}">
+                      <td>${listCategory[i].id}</td>
+                      <td>${listCategory[i].name}</td>
+                      <td><button onclick="updateCategory(${listCategory[i].id})" style="background-color: blue">EDIT</button></td>
+                      <td><button onclick="deleteCategory(${listCategory[i].id})" style="background-color: red">DELETE</button></td>
+
+</tr>`
+        }
+        document.getElementById('drawTable').innerHTML = drawTable;
+    }
+    showListCategory();
+
+    function createCategory(){
+        let newCategory = document.getElementById('newCategory').value
+        let check = true
+        if (newCategory.trim()===''){
+            document.getElementById('validate').innerHTML='<span>không được để trống</span>'
+            //
+        }else {
+           for(let c = 0;c<listCategory.length;c++) {
+                if (newCategory.toLowerCase() === listCategory[c].name.toLowerCase()) {
+                    check = false
+                }
+
+            }
+            console.log('check===',check)
+            if(!check){
+                console.log('check===',check)
+                document.getElementById('validate').innerHTML = '<span style="color: #e6ff00">thể loại nhạc đã tồn tại</span>'
+            }
+
+        }if(check){
+            listCategory.push(new Category(listCategory[listCategory.length-1].id + 1,newCategory))
+            document.getElementById('validate').innerHTML = '<span style="color: #5500ff"></span>'
+        }
+
+        showListCategory();}
+
+
+    function deleteCategory(id) {
+        for (let i = 0; i < listCategory.length; i++) {
+            if (listCategory[i].id==id){
+                listCategory.splice(i,1);
+            }
+        }
+        showListCategory();
+    }
+    function updateCategory(id) {
+        console.log('id ====== ', id)
+        let check = false;
+        let editCategory = prompt('Enter the name to edit', listCategory[id - 1].name);
+        if (editCategory.trim() === '') {
+            document.getElementById("validate").innerHTML = "<span style=\"color:red\">The name is required! Please try again!</span>"
+            return;
+        } else {
+            for (let i = 0; i < listCategory.length; i++) {
+                if (listCategory[i].name.toLowerCase() === editCategory.toLowerCase()) {
+                    check = true;
+                    document.getElementById("validate").innerHTML = "<span style=\"color:red\">Please try again!</span>"
+                }
+            }
+        }
+        if (!check) {
+            listCategory[id - 1].setName(editCategory)
+            document.getElementById("validate").innerHTML = "<span style=\"color:greenyellow\">edit success</span>"
+        }
+        showListCategory();
+    }
+
+
+
+</script>
+</body>
+</html>
